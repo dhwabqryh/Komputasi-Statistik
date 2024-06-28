@@ -1,0 +1,55 @@
+---
+title: "KOMSTAT TUGAS 2"
+author: "dhwabqryh"
+date: "2024-06-06"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+```{r}
+setwd("C:/Users/dhiwa/OneDrive/Dokumen/datanyawch")
+data <- read.table("data_tugas.txt", header=TRUE, colClasses = c("numeric","factor","factor","factor"))
+data
+```
+
+```{r}
+#Subset Data
+y <- data$Pertumbuhan 
+x1 <- data$Jenis_Jeruk 
+x2 <- data$Lokasi 
+x3 <- data$Jenis_Pupuk
+```
+
+```{r}
+#ANOVA Faktorial_RAKL two way
+anova(aov(y ~ x1*x2 + x1*x3 + x2*x3, data = data))
+```
+
+```{r}
+#ANOVA Faktorial_RAKL three way
+anova(aov(y ~ x1*x2*x3, data = data))
+```
+# Interpretasi :
+- Jenis Jeruk tidak memiliki efek signifikan terhadap Pertumbuhan, 
+  karena nilai F-value (1.1412) < dari nilai kritis dan nilai p-value (0.3414975) > dari 0.05.
+
+- Lokasi tidak memiliki efek signifikan terhadap Pertumbuhan, 
+  karena nilai F-value (0.2941) < dari nilai kritis dan nilai p-value (0.5942452) > dari 0.05.
+
+- Jenis Pupuk memiliki efek signifikan terhadap Pertumbuhan, 
+  karena nilai F-value (16.1412) > dari nilai kritis dan nilai p-value (9.654e-05) < dari 0.05.
+
+- Interaksi antara Jenis Jeruk dan Lokasi memiliki efek signifikan terhadap Pertumbuhan, 
+  karena nilai F-value (10.4588) > dari nilai kritis dan nilai p-value (0.0009686) < dari 0.05.
+
+- Interaksi antara Jenis Jeruk dan Jenis Pupuk tidak memiliki efek signifikan terhadap Pertumbuhan, 
+  karena nilai F-value (2.1647) < dari nilai kritis dan nilai p-value (0.1144262) > dari 0.05.
+
+- Interaksi antara Lokasi dan Jenis Pupuk memiliki efek signifikan terhadap Pertumbuhan, 
+  karena nilai F-value (7.3882) > dari nilai kritis dan nilai p-value (0.0045435) < dari 0.05.
+
+- Interaksi antara Jenis Jeruk, Lokasi, dan Jenis Pupuk tidak memiliki efek signifikan terhadap Pertumbuhan, 
+  karena nilai F-value (1.1412) < dari nilai kritis dan nilai p-value (0.3689216) > dari 0.05.
+
