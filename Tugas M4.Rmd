@@ -1,0 +1,84 @@
+---
+title: "Tugas M4"
+author: "dhwabqryh"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+---
+# NO. 1 #
+Lakukan generate data dari distribusi Geometrik(𝑝) dan Weibull(𝛼, 𝛽) dengan
+metode transformasi invers. Jelaskan algoritma dan tunjukkan cara mendapatkan X
+dengan metode transformasi invers. Diketahui CDF:
+
+## Geometrik(𝑝)untuk 𝑥 = 0,1,2, . .. ##
+
+$$F(X) =1-(1-p)^{(1+x)}$$
+### Langkah - langkah
+$$u = 1-(1-p)^{x+1}$$
+$$log(1-p)^{x+1} = 1-u$$
+$$log(1-p)^{x+1} = log(1-u)$$
+$$(u+1)log(1-p) = log(1-u)$$
+$$x+1 = \frac{log(1-u)}{log(1-p)}$$
+$$x = \frac{log(1-u)}{log(1-p)}-1$$
+
+## Weibull(𝛼, 𝛽) untuk 𝑥 ≥ 0 ##
+
+$$F(X) = 1-e^{-(\frac{x}{β})^α}$$
+### Langkah - langkah
+$$u = 1-e^{-(\frac{x}{β})^α}$$
+$$e^{-(\frac{x}{β})^α} = 1-u$$
+$$(\frac{x}{β})^α = -ln(1-u)$$
+$$(\frac{x}{β}) = (-ln(1-u))^{\frac{1}{α}}$$
+$$x = β(-ln(1-u))^{\frac{1}{α}}$$
+
+# NO. 2 #
+Lakukan generate data dari fungsi bawaan di R (rgeom dan rweibull)
+## rgeom
+```{r}
+n = 1000
+p = 0.2
+u = runif(n, 0, 1)
+x = (log(1-u)/log(1-p))-1
+
+x1 = rgeom(n, p)
+head(x)
+head(x1)
+```
+## rweibull
+```{r}
+n = 1000
+alpha = 1
+beta = 2
+u = runif(n, 0, 1)
+x = beta*(-log(1-u))^(1/alpha)
+
+x1 = rweibull(n, alpha, beta)
+head(x)
+head(x1)
+```
+
+# NO. 3 #
+Buat visualisasi dalam bentuk histogram data hasil bangkitan dari kedua cara
+tersebut. Jelaskan insight yang didapatkan.
+
+## rgeom ##
+```{r}
+hist(x, col = 'blue', main = 'histogram geometri', xlab = 'meotde itm')
+hist(x1, col = 'red', main = 'histogram geometri', xlab = 'fungsi rgeom')
+```
+interpretasi :
+output histogram yang dihasilkan dengan metode itm dan fungsi rgeom memiliki kemiripan, tetapi di metode itm 
+terdapat histogram
+yang tinggi direntang nilai 10 pada sumbu x. Sedangkan di fungsi rgeom histogram yang tinggi berada direntang nilai 0 pada sumbu x.
+
+## rweibull ##
+```{r}
+hist(x, col = 'salmon', main = 'histogram weibull', xlab = 'meotde itm')
+hist(x1, col = 'darkolivegreen1', main = 'histogram weibull', xlab = 'fungsi rgeom')
+```
+interpretasi :
+output histogram yang dihasilkan dengan metode itm dan fungsi rweibull memiliki kemiripan. Sehingga tidak terlalu ada perbedaan jika menggunakan metode itm maupun fungsi rweibull. 
+
+## Insight ##
+Dari kedua metode yang sudah digunakan, dapat disimpulkan bahwa hasil dari metode itm dan fungsi dari R memiliki kemiripan dan tidak jauh beda.
