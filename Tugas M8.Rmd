@@ -1,0 +1,109 @@
+---
+title: "Untitled"
+author: "dhwabqryh"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r}
+library(boot)
+```
+
+# No. 1 Lakukan bootstrap untuk mendapatkan estimasi interval mean dengan tingkat kepercayaan 95% (percobaan praktikum di lab).
+```{r}
+# Misalnya kita memiliki data tinggi badan
+data = c(170, 165, 175, 180, 160, 172, 168, 178, 171, 176)
+
+# Fungsi untuk melakukan bootstrapping
+bootstrap_sample = function(data, replikasi)
+{
+  n = length(data)
+  bootstrap_stars = NULL
+  for (i in 1:replikasi)
+  {
+    # Mengambil sampel acak dengan penggantian dari dataset
+    bootstrap_stars = cbind(bootstrap_stars, sample(data, n, replace=T))
+  }
+  
+  # Menghitung statistik rata-rata dari setiap sampel bootstrapped
+  boot_stat = matrix(nrow=1,ncol=replikasi)
+  for (i in 1:replikasi)
+  {
+    boot_stat[,i] = mean(bootstrap_stars[,i])
+  }
+  
+  # Menghitung estimasi dari distribusi statistik
+  mean_boot = mean(boot_stat)
+  std_boot = sd(boot_stat)
+  
+  # Menghitung interval kepercayaan 95%
+  ci_lower = quantile(boot_stat, 0.025)
+  ci_upper = quantile(boot_stat, 0.975)
+  
+  # Menampilkan hasil
+  print(list(
+    mean_bootstrap = mean_boot,
+    std_bootstrap = std_boot,
+    ci_lower = ci_lower,
+    ci_upper = ci_upper
+  ))
+  
+  # Plot histogram
+  hist(boot_stat, main = "Bootstrap Distribution of Sample Means", xlab = "Sample Mean",
+       xlim = c(min(ci_lower, mean_boot - 2*std_boot), max(ci_upper, mean_boot + 2*std_boot)))
+  abline(v = ci_lower, col = "red", lty = "dashed")
+  abline(v = ci_upper, col = "red", lty = "dashed")
+  abline(v = mean_boot, col = "blue", lwd = 2, lty = "dotted")
+}
+
+# Jalankan fungsi bootstrap_sample
+bootstrap_sample(data=data, replikasi=1000)
+```
+
+## Interpretasi
+Dapat disimpulkan berdasarkan output diatas yaitu estimasi parameter dengan bootstrap adalah rata-rata 171.4765 dengan standar deviasi 1.781014 dan nilai estimasi rata-rata dengan bootstrap terletak antara 167.8 dan 174.9.
+
+# No. 2 Lakukan bootstrap untuk mencari estimasi parameter model regresi linier sederhana (data terlampir), bandingkan estimasi yang diperoleh tanpa melakukan bootstrap.
+```{r}
+data <- read.csv("C:/Users/dhiwa/OneDrive/Dokumen/datanyawch/bootstrap_regresi.csv")
+
+# Fungsi untuk membuat sampel bootstrap
+bootstrap_sample <- function(data, replikasi) { 
+  n <- nrow(data) 
+  bootstrap_indices <- lapply(1:replikasi, function(x) sample(n, replace = TRUE))
+  bootstrap_data <- lapply(bootstrap_indices, function(indices) data[indices, ])
+  return(bootstrap_data)
+}
+
+# Menggunakan fungsi untuk membuat sampel bootstrap
+replikasi <- 1000 
+bootstrap_data <- bootstrap_sample(data = data, replikasi = replikasi)
+
+# Matriks untuk menyimpan koefisien model bootstrap
+model_bootstrap <- matrix(NA, nrow = replikasi, ncol = 2)  # 2 karena kita punya 2 koefisien: intercept dan x
+
+# Loop untuk memperkirakan model dan menyimpan koefisien bootstrap
+for (i in 1:replikasi) { 
+  model_bootstrap[i, ] <- lm(y ~ x, data = bootstrap_data[[i]])$coefficients 
+}
+
+# Summary dari koefisien model bootstrap
+summary_bootstrap <- apply(model_bootstrap, 2, mean)
+
+# Estimasi parameter tanpa bootstrap
+model_no_bootstrap <- lm(y ~ x, data = data)
+
+cat('Estimasi parameter tanpa bootstrap:\n', model_no_bootstrap$coefficients) 
+cat('\n') 
+cat('Estimasi parameter dengan bootstrap:\n', summary_bootstrap)
+```
+## Interpretasi
+Estimasi parameter tanpa bootstrap adalah:
+Rata-rata (mean) = 24.96601
+Standar deviasi (sd) = 3.305761
+
+Estimasi parameter dengan bootstrap adalah:
+Rata-rata (mean) = 24.80487
+Standar deviasi (sd) = 3.318757
+
+Sehingga rata-rata (mean) dengan bootstrap lebih kecil dari rata-rata (mean) tanpa bootstrap, yang berarti bahwa estimasi dengan bootstrap lebih akurat dari estimasi tanpa bootstrap. Dan standar deviasi (sd) dengan bootstrap lebih besar dari standar deviasi (sd) tanpa bootstrap, yang berarti bahwa estimasi dengan bootstrap lebih variabel dari estimasi tanpa bootstrap. Dapat disimpulkan bahwa estimasi parameter dengan bootstrap lebih akurat dan lebih variabel dari estimasi parameter tanpa bootstrap.
