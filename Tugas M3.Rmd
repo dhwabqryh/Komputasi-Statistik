@@ -1,0 +1,209 @@
+---
+title: "Untitled"
+author: "dhwabqryh"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+data("mtcars") #memanggil data di R
+?mtcars #mengetahui tentang data mtcars
+head(mtcars) #mengecek 6 observasi awal
+tail(mtcars) #mengecek 6 observasi terakhir
+str(mtcars) #mengetahui struktur data
+```
+
+```{r}
+attach(mtcars)
+```
+## Mean ##
+
+```{r}
+sum(wt)/nrow(mtcars) #menghitung manual nilai mean
+mean(wt) #menghitung mean dengan fungsi
+#jika tanpa fungsi attach
+sum(mtcars$wt)/nrow(mtcars) #menghitung manual nilai mean
+mean(mtcars$wt) #menghitung mean dengan fungsi
+
+getmean <- function(x) {
+n <- length(x)
+xbar <- 0
+for (i in c(1:n))
+{
+xbar <- xbar + ((x[i]/n))
+}
+xbar
+}
+getmean(wt)
+```
+
+```{r}
+data=c(2,4,3,0,1)
+mean(data)
+
+getmean <- function(x) {
+n <- length(x)
+xbar <- 0
+for (i in c(1:n))
+{
+xbar <- (xbar+x[i])/n
+}
+xbar
+}
+getmean(data)
+```
+
+```{r}
+getmean <- function(x) {
+n <- length(x)
+jml <- 0
+for (i in c(1:n))
+{
+jml <- jml+x[i]
+xbar <- jml/n
+}
+xbar
+}
+getmean(data)
+```
+
+## Median ##
+
+```{r}
+df <- sort(data) #mengurutkan data 1 variabel secara parsial
+head(df) #melihat 6 observasi awal
+n <- length(df) #menghitung banyaknya observasi
+p <- 0.5 #persentil 50%
+np <- n*p
+np
+df[ceiling(np)]
+
+#karena hasil np integer, sehingga median ada di observasi ke-16 dan 17
+x16 <- df[16] #mengambil data ke-16
+x17 <- df[17] #mengambil data ke-17
+median <- (x16+x17)/2 #menghitung median dengan manual
+median
+median <- median(wt) #menghitung median dengan fungsi median()
+median
+median <- quantile(wt,0.5) #menghitung median dengan fungsi quantile()
+median
+```
+
+```{r}
+data.new <- c(1, 10, 43, 2, 65, 190, 32, 21)
+
+upp = function(x){
+  df = sort(x)
+  n = length(x)
+  p = 0.5
+  np = n*p
+  if (n%%2 == 0){
+    hasil = (df[np] + df[np+1])/2
+    print(hasil)
+  }else{
+    hasil = df[np+0.5]
+    print(hasil)
+  }
+}
+
+upp(data.new)
+```
+
+## Modus ##
+
+```{r}
+table(cyl) #tabel frekuensi setiap level variabel cyl
+l=length(levels(factor(wt))) #mencari banyak level
+modus <- names(sort(table(cyl))[l]) #mengurutkan frekuensi, mencari level terakhir
+modus
+
+getmode <- function(x) {
+uniqx <- unique(x)
+uniqx[which.max(tabulate(match(x, uniqx)))]
+}
+mode <- getmode(cyl)
+print(mode)
+```
+
+```{r}
+table(vs) #tabel frekuensi setiap level variabel cyl
+l=length(levels(factor(wt))) #mencari banyak level
+modus <- names(sort(table(vs))[l]) #mengurutkan frekuensi, mencari level terakhir
+modus
+
+getmode <- function(x) {
+uniqx <- unique(x)
+uniqx[which.max(tabulate(match(x, uniqx)))]
+}
+mode <- getmode(cyl)
+print(mode)
+
+unique <- unique(vs)
+```
+
+## Varians ##
+
+```{r}
+variansi <- var(wt)
+variansi
+dev_standar <- sqrt(variansi)
+dev_standar
+range <- max(wt)-min(wt)
+range
+range <- range(wt)[2]-range(wt)[1]
+range
+iqr <- IQR(wt)
+iqr
+```
+
+## Summary ##
+
+```{r}
+attach(mtcars)
+allstdes <- summary(mtcars)
+wtcyl_stdes <- allstdes[,c(2,6)] #mengambil cyl di kolom 2 dan wt di kolom 6
+wtcyl_stdes
+```
+
+## Stat.desc ##
+
+```{r}
+library(pastecs) #memanggil library pastecs
+stat.desc(mtcars)
+stat.desc(mtcars[,c(2,6)]) #mengambil cyl di kolom 2 dan wt di kolom 6
+```
+
+```{r}
+library(tidyverse)
+mtcars %>%
+group_by(cyl) %>%
+summarise(Mean=mean(cyl), Median=median(cyl), St.Dev=sd(cyl))
+
+```
+
+## Korelasi ##
+
+```{r}
+korelasi<-cor(mtcars$wt,mtcars$mpg)
+qplot(mpg, wt, data = mtcars, colour = I("green"))
+```
+
+## Fungsi meghitung vasiansi & std. dev ##
+
+```{r}
+getvarsd <- function(x){
+ n = length(x)
+ dev = 0
+ for (i in 1:n)
+ {
+ dev = dev + (x[i]-mean(x))^2 #i nilai dari wt
+ varians = dev/(n-1)
+ stdev = sqrt(varians)
+ }
+ spread = list(Variansi = varians, `Standar Deviasi` = stdev)
+ return(spread)
+}
+getvarsd(wt)
+```
+
+
