@@ -1,0 +1,101 @@
+---
+title: "Untitled"
+author: "dhwabqryh"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# No.1
+```{r}
+n_samples <- 100
+n <- c(50, 500, 5000)
+mu <- 50
+sigma <- sqrt(100)
+
+# membuat matriks
+xbar <- matrix(0, nrow = n_samples, ncol = length(n))
+
+# membuat sampel dan hitung mean
+for (i in 1:length(n)) {
+  for (j in 1:n_samples) {
+    samples <- rgamma(n[i], shape = 50, rate = 1/2)
+    xbar[j, i] <- mean(samples)
+  }
+}
+
+# membuat histogram
+par(mfrow=c(1,3))
+for (i in 1:length(n)) {
+  hist(xbar[, i], breaks = 30, main = paste("Sample Size =", n[i]), xlab = "Mean", ylab = "Frequency", col = "skyblue", border = "black")
+}
+```
+pembahasan
+```{r}
+set.seed(100)
+
+n_sample
+
+
+```
+
+
+
+# No. 2
+```{r}
+lambda <- 0.25
+n <- 1000
+uk_sampel <- c(20, 200, 2000)
+num_samples <- 1000
+
+# membuat matrix
+xbar <- matrix(0, nrow = num_samples, ncol = length(uk_sampel))
+
+# membuat sampel dan hitung mean
+for (i in 1:length(uk_sampel)) {
+  for (j in 1:num_samples) {
+    sample <- rexp(uk_sampel[i], rate = lambda)
+    xbar[j, i] <- mean(sample)
+  }
+}
+
+# membuat histogram
+par(mfrow = c(1,3))
+for (i in 1:length(uk_sampel)) {
+  hist(xbar[,i], breaks = 30, col = "salmon", main = paste("Pengambilan Sampel:", uk_sampel[i]), xlab = "Xbar", ylab = "Frequency")
+}
+```
+
+pembahsan
+```{r}
+set.seed(1000)
+n_sample <- c(50,500,5000)
+
+```
+
+
+
+# No. 3
+```{r}
+light_truck <- 0.4
+car <- 1-light_truck
+
+car_accident <- 40/200000
+truck_accident <- 50/200000
+
+# probability accident involved a light truck
+prob_accident_involved_truck <- (light_truck*truck_accident) + (car*car_accident)
+prob_accident_involved_truck
+```
+
+# No. 4
+```{r}
+p_b <- 0.014 # memiliki virus
+p_a_given_b <- 0.995 # hasil positif seseorang ada virus
+p_a_not_given_b <- 0.1 # hasil positif seseorang tdk ada virus
+p_not_b <- 1-p_b # seseorang tdk ada virus
+p_a <- (p_a_given_b * p_b) + (p_a_not_given_b * p_not_b) # mendapatkan hasil positif
+p_b_given_a <- (p_a_given_b * p_b)/p_a # seseorang memiliki virus jika di tes positif
+p_b_given_a
+```
+
+
